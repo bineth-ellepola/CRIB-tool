@@ -30,6 +30,9 @@ export const Login: React.FC = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
+        <div className="logo-container">
+          <img src="/Logo.jpg" alt="Sejaya Logo" className="login-logo" />
+        </div>
         <h1>Sejaya CRIB Tool</h1>
         <h2>Login</h2>
 
@@ -64,12 +67,6 @@ export const Login: React.FC = () => {
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-
-        <div className="demo-info">
-          <p className="demo-title">Login with your Finflux credentials:</p>
-          <p>Username: Your Finflux username</p>
-          <p>Password: Your Finflux password</p>
-        </div>
       </div>
     </div>
   );
