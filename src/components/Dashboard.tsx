@@ -84,10 +84,12 @@ export const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {isLoading ? (
+        {data.length > 0 ? (
+          <Table data={data} isLoading={isLoading} />
+        ) : isLoading ? (
           <div className="loading">Loading data...</div>
         ) : (
-          <Table data={data} />
+          <div className="no-data">No data available</div>
         )}
       </main>
     </div>

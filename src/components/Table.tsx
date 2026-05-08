@@ -3,9 +3,10 @@ import '../styles/table.css';
 
 interface TableProps {
   data: Array<{ [key: string]: string | number | boolean | null }>;
+  isLoading?: boolean;
 }
 
-export const Table: React.FC<TableProps> = ({ data }) => {
+export const Table: React.FC<TableProps> = ({ data, isLoading = false }) => {
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
@@ -126,7 +127,7 @@ export const Table: React.FC<TableProps> = ({ data }) => {
   };
 
   return (
-    <div className="table-container">
+    <div className="table-container" style={{ position: 'relative' }}>
       <table className="data-table">
         <thead>
           <tr>
@@ -157,6 +158,12 @@ export const Table: React.FC<TableProps> = ({ data }) => {
           ))}
         </tbody>
       </table>
+      {isLoading && (
+        <div className="table-loading-overlay">
+          <div className="table-loading-spinner"></div>
+          <p>Refreshing data...</p>
+        </div>
+      )}
     </div>
   );
 };
