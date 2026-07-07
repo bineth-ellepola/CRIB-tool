@@ -1,12 +1,9 @@
 import axios from 'axios';
-import type { AxiosInstance } from 'axios';
 import authService from './authService';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://sejaya-uat.finflux.io/fineract-provider/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/fineract-api/fineract-provider/api';
 
 class ApiService {
-  private api: AxiosInstance;
-
   constructor() {
     this.api = axios.create({
       baseURL: API_BASE_URL,
@@ -15,7 +12,6 @@ class ApiService {
       },
     });
 
-    // Request interceptor to add auth token
     this.api.interceptors.request.use(
       (config) => {
         const token = authService.getToken();
@@ -27,12 +23,10 @@ class ApiService {
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor for error handling
     this.api.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          // Token expired or invalid
           authService.logout();
           window.location.href = '/login';
         }
@@ -41,23 +35,18 @@ class ApiService {
     );
   }
 
-  /**
-   * Fetch data from API
-   * Replace '/data' with your actual API endpoint
-   */
-  async fetchData<T>(endpoint: string = '/data'): Promise<T[]> {
+  async fetchData(endpoint = '/data') {
     try {
-      const response = await this.api.get<{ data: T[] }>(endpoint);
+      const response = await this.api.get(endpoint);
       return response.data.data || response.data;
     } catch (error) {
-      throw new Error('Failed to fetch data: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      throw new Error('Failed to fetch data: ' + (error instanceof Error ? error.message : 'Unknown error'), {
+        cause: error,
+      });
     }
   }
 
-  /**
-   * Get API instance for custom requests
-   */
-  getApiInstance(): AxiosInstance {
+  getApiInstance() {
     return this.api;
   }
 }

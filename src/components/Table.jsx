@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../styles/table.css';
 
-interface TableProps {
-  data: Array<{ [key: string]: string | number | boolean | null }>;
-  isLoading?: boolean;
-}
+export const Table = ({ data, isLoading = false }) => {
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState('asc');
 
-export const Table: React.FC<TableProps> = ({ data, isLoading = false }) => {
-  const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-
-  // Define all columns based on complete XML structure
   const columns = [
     'BatchIdentifier',
     'ContractCode',
@@ -105,19 +99,18 @@ export const Table: React.FC<TableProps> = ({ data, isLoading = false }) => {
     return <div className="no-data">No data available</div>;
   }
 
-  // Sort data if a sort column is selected
   let sortedData = [...data];
+
   if (sortColumn) {
     sortedData.sort((a, b) => {
       const aValue = a[sortColumn] ?? '';
       const bValue = b[sortColumn] ?? '';
-      
       const comparison = String(aValue).localeCompare(String(bValue));
       return sortDirection === 'asc' ? comparison : -comparison;
     });
   }
 
-  const handleSort = (column: string) => {
+  const handleSort = (column) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -132,7 +125,7 @@ export const Table: React.FC<TableProps> = ({ data, isLoading = false }) => {
         <thead>
           <tr>
             {columns.map((column) => (
-              <th 
+              <th
                 key={column}
                 className={sortColumn === column ? `sortable active ${sortDirection}` : 'sortable'}
                 onClick={() => handleSort(column)}
@@ -150,9 +143,7 @@ export const Table: React.FC<TableProps> = ({ data, isLoading = false }) => {
           {sortedData.map((row, rowIndex) => (
             <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'even' : 'odd'}>
               {columns.map((column) => (
-                <td key={`${rowIndex}-${column}`}>
-                  {formatCellValue(row[column])}
-                </td>
+                <td key={`${rowIndex}-${column}`}>{formatCellValue(row[column])}</td>
               ))}
             </tr>
           ))}
@@ -168,15 +159,14 @@ export const Table: React.FC<TableProps> = ({ data, isLoading = false }) => {
   );
 };
 
-/**
- * Format cell value for display
- */
-const formatCellValue = (value: string | number | boolean | null | undefined): string => {
+const formatCellValue = (value) => {
   if (value === undefined || value === null) {
     return '-';
   }
+
   if (typeof value === 'boolean') {
     return value ? 'Yes' : 'No';
   }
+
   return String(value).trim();
 };

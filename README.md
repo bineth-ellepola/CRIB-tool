@@ -40,26 +40,24 @@ A complete React web application built with modern best practices, featuring aut
 ```
 src/
 ├── components/              # React components
-│   ├── Login.tsx           # Login page component
-│   ├── Dashboard.tsx       # Main dashboard with table
-│   ├── Table.tsx           # Reusable table component
-│   ├── ProtectedRoute.tsx  # Route protection wrapper
-│   └── index.ts            # Component exports
+│   ├── Login.jsx           # Login page component
+│   ├── Dashboard.jsx       # Main dashboard with table
+│   ├── Table.jsx           # Reusable table component
+│   ├── ProtectedRoute.jsx  # Route protection wrapper
+│   └── index.js            # Component exports
 ├── services/               # API services
-│   ├── authService.ts      # Authentication service
-│   └── apiService.ts       # API request service with interceptors
+│   ├── authService.js      # Authentication service
+│   └── apiService.js       # API request service with interceptors
 ├── context/                # React Context
-│   └── AuthContext.tsx     # Authentication context with hooks
-├── types/                  # TypeScript type definitions
-│   └── index.ts            # Type definitions
+│   └── AuthContext.js     # Authentication context with hooks
 ├── utils/                  # Utility functions
-│   └── xmlConverter.ts     # XML conversion utilities
+│   └── xmlConverter.js     # XML conversion utilities
 ├── styles/                 # CSS stylesheets
 │   ├── auth.css            # Authentication page styles
 │   ├── dashboard.css       # Dashboard styles
 │   └── table.css           # Table component styles
-├── App.tsx                 # Main app component with routing
-├── main.tsx                # Entry point
+├── App.jsx                 # Main app component with routing
+├── main.jsx                # Entry point
 └── index.css               # Global styles
 ```
 
@@ -90,13 +88,13 @@ The app will open at `http://localhost:5173/`
 
 To connect to your own API, update the API URLs in the service files:
 
-**src/services/authService.ts:**
-```typescript
+**src/services/authService.js:**
+```javascript
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://your-api.com';
 ```
 
-**src/services/apiService.ts:**
-```typescript
+**src/services/apiService.js:**
+```javascript
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://your-api.com';
 ```
 

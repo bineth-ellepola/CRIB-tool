@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import apiService from '../services/apiService';
@@ -6,36 +6,33 @@ import { downloadTableAsXML } from '../utils/xmlConverter';
 import { Table } from './Table';
 import '../styles/dashboard.css';
 
-export interface TableData {
-  [key: string]: string | number | boolean;
-}
-
-export const Dashboard: React.FC = () => {
-  const [data, setData] = useState<TableData[]>([]);
+export const Dashboard = () => {
+  const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  async function fetchData() {
     setIsLoading(true);
     setError(null);
+
     try {
-      // Replace '/data' with your actual API endpoint
-      const result = await apiService.fetchData<TableData>('/data');
+      const result = await apiService.fetchData('/data');
       setData(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
-      // For demo purposes, set sample data if API fails
       setData(getSampleData());
     } finally {
       setIsLoading(false);
     }
-  };
+  }
+
+  useEffect(() => {
+    void Promise.resolve().then(() => {
+      fetchData();
+    });
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -47,6 +44,7 @@ export const Dashboard: React.FC = () => {
       alert('No data to export');
       return;
     }
+
     downloadTableAsXML(data, 'sejaya_crib_data.xml');
   };
 
@@ -96,8 +94,7 @@ export const Dashboard: React.FC = () => {
   );
 };
 
-// Sample data for demonstration - Sejaya CRIB Tool
-const getSampleData = (): TableData[] => {
+const getSampleData = () => {
   return [
     {
       BatchIdentifier: 'BATCH-2024-001',
