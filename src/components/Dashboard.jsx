@@ -2,16 +2,18 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import apiService from '../services/apiService';
-import { downloadTableAsXML } from '../utils/xmlConverter';
+import { convertToXML, downloadTableAsXML } from '../utils/xmlConverter';
 import { Table } from './Table';
 import '../styles/dashboard.css';
 
 export const Dashboard = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const xmlUploadEndpoint = import.meta.env.VITE_XML_UPLOAD_URL || '/your-xml-upload-api-endpoint';
 
   async function fetchData() {
     setIsLoading(true);
@@ -48,6 +50,26 @@ export const Dashboard = () => {
     downloadTableAsXML(data, 'sejaya_crib_data.xml');
   };
 
+  const handleUploadXML = async () => {
+    if (data.length === 0) {
+      alert('No data to upload');
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const xmlContent = convertToXML(data);
+      await apiService.uploadXML(xmlUploadEndpoint, xmlContent);
+      alert('XML uploaded successfully');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to upload XML';
+      alert(message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -72,6 +94,13 @@ export const Dashboard = () => {
           </button>
           <button onClick={handleExportXML} disabled={isLoading || data.length === 0} className="export-btn">
             Convert to XML
+          </button>
+          <button
+            onClick={handleUploadXML}
+            disabled={isLoading || isUploading || data.length === 0}
+            className="upload-btn"
+          >
+            {isUploading ? 'Uploading...' : 'Upload XML to API'}
           </button>
         </div>
 

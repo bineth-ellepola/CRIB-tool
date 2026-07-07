@@ -46,6 +46,22 @@ class ApiService {
     }
   }
 
+  async uploadXML(endpoint, xmlContent) {
+    try {
+      const response = await this.api.post(endpoint, xmlContent, {
+        headers: {
+          'Content-Type': 'application/xml',
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to upload XML: ' + (error instanceof Error ? error.message : 'Unknown error'), {
+        cause: error,
+      });
+    }
+  }
+
   getApiInstance() {
     return this.api;
   }
